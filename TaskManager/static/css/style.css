@@ -1,0 +1,115 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Public */
+body {
+    background-color: #fff;
+    color: #222;
+}
+ul {
+    list-style: none;
+}
+a {
+    color: #222;
+    text-decoration: none;
+}
+
+/* Header */
+header .header-cont {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 30px;
+    padding-right: 25px ;
+    box-shadow: 0px 0px 4px black;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70%;
+    background-color: #ddd;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+header .logo h1 {
+    font-size: 21px;
+}
+
+header .logo ul,
+header .links ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+}
+
+header .logo ul a,
+header .links ul a{
+    font-size: 17px;
+    font-weight: 500;
+}
+
+header .links .btn {
+    background-color: rgb(0, 81, 255);
+    padding: 8px 12px;
+    color: white;
+    border-radius: 15px;
+    font-weight: 700;
+}
+
+header .links .btn-outside {
+    border: 2px solid rgb(0, 81, 255);
+    color: rgb(0, 81, 255);
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-weight: 700;
+}
+
+
+/* Main */
+.main {
+    position: relative;
+    background-image: url(../imgs/main.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    height: 100vh;
+    width: 100%;
+    z-index: -1;
+}
+
+.main::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.main .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 82%;
+    color: white;
+}
+.main .content h1 {
+    font-size: 50px;
+    color: white;
+    z-index: 999;
+}
+.main .content h4 {
+    font-size: 19px;
+    color: #ddd;
+    z-index: 999;
+}
