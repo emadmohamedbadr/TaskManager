@@ -1,33 +1,31 @@
-{%load static%} 
+{% load static %} 
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Mangement</title>
+    <title>Task Management</title>
 
     <!-- CSS FILE -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <!-- Header-->
+    <!-- Header -->
     <header class="header">
         <div class="header-cont">
             <nav class="navbar">
                 <div class="logo">
                     <h1>Task Manager</h1>
                     <ul>
-                        <li><a href="">Home</a></li>
-                        <li><a href="">About</a></li>
-                        <li><a href="">Services</a></li>
+                        <li><a href="{% url 'core:about' %}">About</a></li>
                     </ul>
                 </div>
             </nav>
             <div class="links">
                 <ul>
-                    <li><a href="" class="btn-outside">Login</a></li>
-                    <li><a href="" class="btn">Signup</a></li>
+                    <li><a href="{% url 'users:login' %}" class="btn-outside">Login</a></li>
+                    <li><a href="{% url 'users:register' %}" class="btn">Signup</a></li>
                 </ul>
             </div>
         </div>

@@ -1,117 +1,113 @@
-
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-/* Public */
+/* General Styles */
 body {
-    background-color: #fff;
-    color: #222;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    text-align: center;
+    margin: 0;
+    padding: 0;
 }
-ul {
-    list-style: none;
+
+/* Form Container */
+.container {
+    width: 35%;
+    margin: 50px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #222, #333);
+    border-radius: 12px;
+    box-shadow: 0px 0px 15px rgba(0, 255, 0, 0.5);
+    transition: 0.3s ease-in-out;
 }
+
+.container:hover {
+    box-shadow: 0px 0px 25px rgba(0, 255, 0, 0.8);
+}
+
+/* Headings */
+h1 {
+    color: #00ff00;
+    text-transform: uppercase;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Form Fields */
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #00ff00;
+    border-radius: 5px;
+    background: #222;
+    color: #ffffff;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Hover Effects on Inputs */
+input:focus, select:focus {
+    border-color: #00cc00;
+    box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.8);
+}
+
+/* Buttons */
+button {
+    background: #00ff00;
+    color: #121212;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+    font-weight: bold;
+}
+
+/* Hover Effects on Buttons */
+button:hover {
+    background: #00cc00;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 15px rgba(0, 255, 0, 0.8);
+}
+
+/* Links */
 a {
-    color: #222;
+    color: #00ff00;
     text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-/* Header */
-header .header-cont {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 14px 30px;
-    padding-right: 25px ;
-    box-shadow: 0px 0px 4px black;
-    border-radius: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 70%;
-    background-color: #ddd;
+a:hover {
+    color: #00cc00;
+    text-decoration: underline;
 }
 
-header .logo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+/* Error & Success Messages */
+.error {
+    color: #ff4c4c;
+    font-weight: bold;
 }
 
-header .logo h1 {
-    font-size: 21px;
+.success {
+    color: lightgreen;
+    font-weight: bold;
 }
 
-header .logo ul,
-header .links ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
+/* Animation for Form Fields */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-header .logo ul a,
-header .links ul a{
-    font-size: 17px;
-    font-weight: 500;
-}
-
-header .links .btn {
-    background-color: rgb(0, 81, 255);
-    padding: 8px 12px;
-    color: white;
-    border-radius: 15px;
-    font-weight: 700;
-}
-
-header .links .btn-outside {
-    border: 2px solid rgb(0, 81, 255);
-    color: rgb(0, 81, 255);
-    padding: 6px 12px;
-    border-radius: 15px;
-    font-weight: 700;
-}
-
-
-/* Main */
-.main {
-    position: relative;
-    background-image: url("{% static 'imgs/main.jpg' %}");
-
-    background-repeat: no-repeat;
-    background-size: 100%;
-    height: 100vh;
-    width: 100%;
-    z-index: -1;
-}
-
-.main::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.3);
-}
-
-.main .content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 82%;
-    color: white;
-}
-.main .content h1 {
-    font-size: 50px;
-    color: white;
-    z-index: 999;
-}
-.main .content h4 {
-    font-size: 19px;
-    color: #ddd;
-    z-index: 999;
+.container {
+    animation: fadeIn 0.8s ease-in-out;
 }
