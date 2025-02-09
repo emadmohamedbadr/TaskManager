@@ -1,0 +1,165 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #d862d8, #74098f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    width: 1200px; /* زيادة العرض */
+    height: 600px; /* زيادة الطول */
+    overflow: hidden;
+}
+
+.login-container {
+    width: 50%;
+    padding: 50px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+input[type="email"], 
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.admin-check {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.admin-check input {
+    margin-right: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #d862d8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #b84bb8;
+}
+
+.signup-text a {
+    color: #d862d8;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
+    color: #b84bb8;
+}
+
+.social-login {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ccc;
+    margin: 5px;
+}
+
+.divider span {
+    padding: 0 10px;
+    font-weight: bold;
+    color: #666;
+}
+
+.google-btn, .facebook-btn {
+    width: 100%;
+    padding: 12px;
+    margin: 5px 0;
+    border: 2px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.google-btn {
+    border-color: #db4437;
+    color: #db4437;
+}
+
+.google-btn:hover {
+    background-color: rgba(219, 68, 55, 0.1);
+}
+
+.facebook-btn {
+    border-color: #1877f2;
+    color: #1877f2;
+}
+
+.facebook-btn:hover {
+    background-color: rgba(169, 135, 185, 0.1);
+}
+
+.google-btn img, .facebook-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.image-section {
+    width: 80%; /* زيادة عرض الصورة */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+

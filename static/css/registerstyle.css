@@ -1,0 +1,123 @@
+/* Body Background */
+body {
+    font-family: Arial, sans-serif;
+    background: #d862d8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 130vh; /* زيادة الطول */
+    margin: 0;
+    padding: 40px 20px;
+}
+
+/* الإطار الخارجي */
+.outer-border {
+    background: #d862d8;
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    width: 1000px;
+    min-height: 950px; /* زيادة الطول */
+    overflow: hidden;
+}
+
+/* Signup Section */
+.signup-container {
+    width: 45%;
+    padding: 60px 30px;
+    text-align: center;
+    background: white; /* إزالة الخلفية المتدرجة */
+    border-radius: 15px;
+}
+
+.signup-box {
+    width: 100%;
+}
+
+/* العنوان الرئيسي */
+h2 {
+    margin-bottom: 10px;
+    color: #4d004d;
+}
+
+/* نص تسجيل الدخول */
+.login-text {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.login-text a {
+    color: #d862d8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-text a:hover {
+    text-decoration: underline;
+}
+
+/* إدخال البيانات */
+label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="email"], 
+input[type="password"], 
+input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* زر التسجيل */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #d862d8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #b84bb8;
+}
+
+/* Image Section */
+.image-section {
+    width: 55%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: #f9f9f9;
+}
+
+.image-section img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+
+
+
