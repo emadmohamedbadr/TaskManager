@@ -9,18 +9,22 @@ def login(request):
         try:
             user = User.objects.get(email=email)
 
-            if user.password == password:  # ❌ Not secure (use hashing in real projects)
+            if user.password == password:  
+                request.session['user_id'] = user.id  
+                request.session['user_role'] = user.role  
+
                 if user.role == 'manager':
-                    return redirect('users:manager_page')
+                    return redirect('tasks:manager_tasks')
                 elif user.role == 'employee':
-                    return redirect('users:employee_page')
+                    return redirect('tasks:employee_tasks')
             else:
                 return render(request, 'users/login.html', {'error': 'Invalid password'})
-        
+
         except User.DoesNotExist:
             return render(request, 'users/login.html', {'error': 'User not found'})
-    
+
     return render(request, 'users/login.html')
+
 
 def register(request):
     if request.method == 'POST':
