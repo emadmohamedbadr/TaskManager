@@ -6,6 +6,7 @@ class Task(models.Model):
         ('pending', 'Pending'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
+        ('delayed', 'delayed'),
     ]
 
     PRIORITY_CHOICES = [

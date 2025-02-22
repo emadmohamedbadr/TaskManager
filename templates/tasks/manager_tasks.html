@@ -1,38 +1,191 @@
-<h1>Manager Task Dashboard</h1>
-<a href="#">Logout</a>
+{% load static %}  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Task Management</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
-<h2>Add New Task</h2>
-<form method="post" action="{% url 'tasks:add_task' %}">
-    {% csrf_token %}
-    <input type="text" name="title" placeholder="Task Title" required>
-    <textarea name="description" placeholder="Task Description"></textarea>
-    <select name="assigned_to">
-        {% for employee in employees %}
-            <option value="{{ employee.id }}">{{ employee.first_name }} {{ employee.last_name }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Add Task</button>
-</form>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <img src="{% static 'imgs/image_admin/logo.webp' %}" alt="Logo" class="logo">
+                <h1 class="project-name">Task Manager</h1>
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <input type="text" placeholder="Search..." id="taskSearch">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="profile">
+                    <img src="{% static 'imgs/image_admin/picture_admin.webp' %}" alt="Profile" class="profile-pic">
+                    <span class="profile-name">Admin</span>
+                </div>
+            </div>
+        </header>
 
-<h2>All Tasks</h2>
-<table>
-    <tr>
-        <th>Title</th>
-        <th>Assigned To</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
-    {% for task in tasks %}
-    <tr>
-        <td>{{ task.title }}</td>
-        <td>{{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</td>
-        <td>{{ task.status }}</td>
-        <td>
-            <form method="post" action="{% url 'tasks:delete_task' task.id %}">
-                {% csrf_token %}
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>📊 Dashboard</h2>
+            <ul>
+                <li><a href="#" onclick="filterTasks('all')"><i class="fas fa-tasks"></i> All Tasks</a></li>
+                <li><a href="#" onclick="filterTasks('completed')"><i class="fas fa-check-circle"></i> Completed</a></li>
+                <li><a href="#" onclick="filterTasks('delayed')"><i class="fas fa-clock"></i> Delayed</a></li>
+                <li><a href="#" onclick="filterTasks('in_progress')"><i class="fas fa-cogs"></i> In Progress</a></li>
+            </ul>
+            <button class="add-task-btn" onclick="showTaskForm()"><i class="fas fa-plus"></i> Add Task</button>
+            <button class="logout-btn" onclick="window.location.href='#'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>📌 Task Management</h1>
+
+            <!-- Task Form (Initially Hidden) -->
+            <div id="taskForm" class="task-form" style="display: none;">
+                <h3>➕ Add New Task</h3>
+                <form method="POST" action="{% url 'tasks:add_task' %}">
+                    {% csrf_token %}
+                    <label>👤 Employee:</label>
+                    <select name="assigned_to">
+                        {% for employee in employees %}
+                            <option value="{{ employee.id }}">{{ employee.first_name }} {{ employee.last_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label>✍️ Task Name:</label>
+                    <input type="text" name="title" placeholder="Enter task name" required>
+
+                    <label>📝 Task Description:</label>
+                    <textarea name="description" placeholder="Enter task description"></textarea>
+
+                    <label>🔥 Priority:</label>
+                    <select name="priority">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium">🟠 Medium</option>
+                        <option value="high">🔴 High</option>
+                        <option value="urgent">🚨 Urgent</option>
+                    </select>
+
+                    <label>📌 Status:</label>
+                    <select name="status">
+                        <option value="pending">⏳ Pending</option>
+                        <option value="in_progress">⚙️ In Progress</option>
+                        <option value="completed">✅ Completed</option>
+                        <option value="delayed">❌ Delayed</option>
+                    </select>
+
+                    <div class="form-buttons">
+                        <button type="submit"><i class="fas fa-check"></i> Add</button>
+                        <button type="button" onclick="hideTaskForm()"><i class="fas fa-times"></i> Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Task List -->
+            <div id="taskList" class="task-list">
+                {% if tasks %}
+                    {% for task in tasks %}
+                        <div class="task-card" data-status="{{ task.status }}">
+                            <h3>{{ task.title }}</h3>
+                            <p>{{ task.description }}</p>
+                            <p><strong>Assigned to:</strong> {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
+                            <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+                            <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+
+                            <!-- Update Task Button -->
+                            <button class="update-task-btn" onclick="showUpdateTaskForm('{{ task.id }}', '{{ task.title }}', '{{ task.description }}', '{{ task.priority }}', '{{ task.status }}')">
+                                <i class="fas fa-edit"></i> Update
+                            </button>
+
+                            <!-- Delete Task Button -->
+                            <form method="POST" action="{% url 'tasks:delete_task' task.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-task-btn" onclick="return confirmDeleteTask()">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    📋 No tasks available
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Task Form -->
+    <div id="updateTaskForm" class="task-form" style="display: none;">
+        <h3>✏️ Update Task</h3>
+        <form method="POST" id="updateTaskFormElement" action="">
+            {% csrf_token %}
+            <input type="hidden" name="task_id" id="updateTaskId">
+
+            <label>✍️ Task Name:</label>
+            <input type="text" name="title" id="updateTaskTitle" required>
+
+            <label>📝 Task Description:</label>
+            <textarea name="description" id="updateTaskDescription"></textarea>
+
+            <label>🔥 Priority:</label>
+            <select name="priority" id="updateTaskPriority">
+                <option value="low">🟢 Low</option>
+                <option value="medium">🟠 Medium</option>
+                <option value="high">🔴 High</option>
+                <option value="urgent">🚨 Urgent</option>
+            </select>
+
+            <label>📌 Status:</label>
+            <select name="status" id="updateTaskStatus">
+                <option value="pending">⏳ Pending</option>
+                <option value="in_progress">⚙️ In Progress</option>
+                <option value="completed">✅ Completed</option>
+                <option value="delayed">❌ Delayed</option>
+            </select>
+
+            <div class="form-buttons">
+                <button type="submit"><i class="fas fa-save"></i> Save</button>
+                <button type="button" onclick="hideUpdateTaskForm()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function showTaskForm() { document.getElementById("taskForm").style.display = "block"; }
+        function hideTaskForm() { document.getElementById("taskForm").style.display = "none"; }
+
+        function showUpdateTaskForm(taskId, title, description, priority, status) {
+            document.getElementById("updateTaskForm").style.display = "block";
+            document.getElementById("updateTaskId").value = taskId;
+            document.getElementById("updateTaskTitle").value = title;
+            document.getElementById("updateTaskDescription").value = description;
+            document.getElementById("updateTaskPriority").value = priority;
+            document.getElementById("updateTaskStatus").value = status;
+
+            // Dynamically set the form action URL
+            document.getElementById("updateTaskFormElement").action = `{% url 'tasks:update_task' 0 %}`.replace("0", taskId);
+        }
+
+        function hideUpdateTaskForm() {
+            document.getElementById("updateTaskForm").style.display = "none";
+        }
+
+        function filterTasks(status) {
+            document.querySelectorAll('.task-card').forEach(task => {
+                task.style.display = (status === "all" || task.dataset.status === status) ? "block" : "none";
+            });
+        }
+
+        function confirmDeleteTask() {
+            return confirm("Are you sure you want to delete this task?");
+        }
+    </script>
+
+</body>
+</html>
