@@ -1,29 +1,99 @@
-<h1>Your Assigned Tasks</h1>
-<a href="#">Logout</a>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Task Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/user.css' %}">
+</head>
+<body>
 
-<table>
-    <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Status</th>
-        <th>Update</th>
-    </tr>
-    {% for task in tasks %}
-    <tr>
-        <td>{{ task.title }}</td>
-        <td>{{ task.description }}</td>
-        <td>{{ task.status }}</td>
-        <td>
-            <form method="post" action="{% url 'tasks:update_task_status' task.id %}">
-                {% csrf_token %}
-                <select name="status">
-                    <option value="pending">Pending</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                </select>
-                <button type="submit">Update</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <img src="{% static 'imgs/images_user/logo.webp' %}" alt="Task Manager Logo" class="logo">
+                <span class="app-name">Task Manager</span>
+            </div>
+            <div class="search-section">
+                <input type="text" placeholder="Search tasks..." class="search-input">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div class="user-section">
+                <button class="language-switcher" onclick="toggleLanguage()">
+                    <i class="fas fa-globe"></i>
+                    <span id="languageText">EN</span>
+                </button>
+                <img src="{% static 'imgs/images_user/picture admain.webp' %}" alt="User Image" class="user-image">
+                <span class="user-name">John Doe</span>
+            </div>
+        </div>
+    
+        <!-- Sidebar and Main Content -->
+        <div class="content-wrapper">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2>📊 <span class="lang-dashboard">User Dashboard</span></h2>
+                <ul>
+                    <li><a href="#" onclick="filterTasks('all')"><i class="fas fa-tasks"></i> <span class="lang-all">All Tasks</span></a></li>
+                    <li><a href="#" onclick="filterTasks('pending')"><i class="fas fa-calendar-alt"></i> <span class="lang-upcoming">Pending Tasks</span></a></li>
+                    <li><a href="#" onclick="filterTasks('in_progress')"><i class="fas fa-calendar-day"></i> <span class="lang-current">In Progress Tasks</span></a></li>
+                    <li><a href="#" onclick="filterTasks('completed')"><i class="fas fa-check-circle"></i> <span class="lang-completed">Completed Tasks</span></a></li>
+                    <li><a href="#" onclick="filterTasks('delayed')"><i class="fas fa-exclamation-triangle"></i> <span class="lang-delayed">Delayed Tasks</span></a></li>
+                </ul>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span class="lang-logout">Logout</span></button>
+            </div>
+    
+            <!-- Main Content -->
+            <div class="main-content">
+                <h1>📌 <span class="lang-my-tasks">My Tasks</span></h1>
+                <!-- Task List -->
+            <div id="taskList" class="task-list">
+                {% if tasks %}
+                    {% for task in tasks %}
+                        <div class="task-card task{{task.status}}" data-status="{{ task.status }}">
+                            <h3>{{ task.title }}</h3>
+                            <p>{{ task.description }}</p>
+                            <p><strong>Assigned to:</strong> {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
+                            <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+                            <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+
+                            
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    📋 No tasks available
+                {% endif %}
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/user.js' %}"></script>
+
+    <script>
+        function filterTasks(status) {
+    // Get all task elements
+    const tasks = document.querySelectorAll('.task-card');
+
+    tasks.forEach(task => {
+        const taskStatus = task.getAttribute('data-status');
+
+        // Show or hide tasks based on the selected status
+        if (status === 'all' || taskStatus === status) {
+            task.style.display = 'block'; // Show the task
+        } else {
+            task.style.display = 'none'; // Hide the task
+        }
+    });
+        }
+
+        
+    </script>
+    
+
+
+</body>
+</html>
