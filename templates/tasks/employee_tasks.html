@@ -43,8 +43,11 @@
                     <li><a href="#" onclick="filterTasks('completed')"><i class="fas fa-check-circle"></i> <span class="lang-completed">Completed Tasks</span></a></li>
                     <li><a href="#" onclick="filterTasks('delayed')"><i class="fas fa-exclamation-triangle"></i> <span class="lang-delayed">Delayed Tasks</span></a></li>
                 </ul>
-                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span class="lang-logout">Logout</span></button>
-            </div>
+                <a href="{% url 'tasks:log_out' %}" class="logout-btn" style="text-decoration: none;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                
+             </div>
     
             <!-- Main Content -->
             <div class="main-content">

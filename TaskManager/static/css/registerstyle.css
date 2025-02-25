@@ -1,3 +1,43 @@
+/* system messages */
+.messages {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 80%;
+    max-width: 600px;
+}
+
+.messages .alert {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background-color: #28a745;  /* Green */
+    color: white;
+    border-color: #218838;
+}
+
+.alert-danger {
+    background-color: #dc3545;  /* Red */
+    color: white;
+    border-color: #c82333;
+}
+
+.alert-warning {
+    background-color: #ffc107;  /* Yellow */
+    color: black;
+    border-color: #e0a800;
+}
+
+
+
 /* Body Background */
 body {
     font-family: Arial, sans-serif;

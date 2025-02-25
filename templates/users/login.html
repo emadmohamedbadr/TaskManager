@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="{% static 'css/loginstyle.css' %}">
 </head>
 <body>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     
     <div class="container">
         <div class="login-container">

@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages  # For system messages
 from .models import User
+from django.contrib.auth.hashers import check_password, make_password  # For password hashing
+
 
 def login(request):
     if request.method == 'POST':
@@ -9,19 +12,23 @@ def login(request):
         try:
             user = User.objects.get(email=email)
 
-            if user.password == password:  
+            #  Use Django's check_password for secure password checking
+            if check_password(password, user.password):  
                 request.session['user_id'] = user.id  
                 request.session['user_role'] = user.role  
+                messages.success(request, "Login successful!")  # Success message
 
                 if user.role == 'manager':
                     return redirect('tasks:manager_tasks')
                 elif user.role == 'employee':
                     return redirect('tasks:employee_tasks')
             else:
-                return render(request, 'users/login.html', {'error': 'Invalid password'})
+                messages.error(request, 'Invalid password')  
+                return redirect('users:login')  
 
         except User.DoesNotExist:
-            return render(request, 'users/login.html', {'error': 'User not found'})
+            messages.error(request, 'User not found')  
+            return redirect('users:login')  
 
     return render(request, 'users/login.html')
 
@@ -39,13 +46,17 @@ def register(request):
 
         # Check if passwords match
         if password != confirm_password:
-            return render(request, 'users/register.html', {'error': 'Passwords do not match'})
+            messages.error(request, 'Passwords do not match')
+            return redirect('users:register')  
 
-        # Check if email is already registered
+        #Check if email is already registered
         if User.objects.filter(email=email).exists():
-            return render(request, 'users/register.html', {'error': 'Email already exists'})
+            messages.error(request, 'Email already exists')
+            return redirect('users:register')  
 
-        # Save the user
+        #  Hash the password before saving
+        hashed_password = make_password(password)
+
         user = User(
             first_name=first_name,
             last_name=last_name,
@@ -53,17 +64,19 @@ def register(request):
             phone_number=phone_number,
             birthday=birthday,
             role=role,
-            password=password  # ✅ Hash the password before saving
+            password=hashed_password  #  Store hashed password
         )
         user.save()
 
-        return render(request, 'users/register.html', {'success': 'Registration successful! You can now login.'})
+        messages.success(request, 'Registration successful! You can now login.')
+        return redirect('users:login')  
 
     return render(request, 'users/register.html')
 
 
 def manager_page(request):
     return render(request, 'users/manager_page.html')
+
 
 def employee_page(request):
     return render(request, 'users/employee_page.html')
