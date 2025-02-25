@@ -10,6 +10,55 @@ body {
     color: #333;
 }
 
+
+
+
+/* css for error messages */
+   /* Messages Container */
+.messages {
+    margin: 10px 0;
+}
+
+/* Alert Box */
+.alert {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Error Messages */
+.alert-error {
+    background-color: #ffebee; /* Light red for errors */
+    color: #c62828; /* Dark red text */
+    border: 1px solid #c62828;
+}
+
+/* Success Messages */
+.alert-success {
+    background-color: #e8f5e9; /* Light green for success */
+    color: #2e7d32; /* Dark green text */
+    border: 1px solid #2e7d32;
+}
+
+/* Info Messages */
+.alert-info {
+    background-color: #e3f2fd; /* Light blue for info */
+    color: #1565c0; /* Dark blue text */
+    border: 1px solid #1565c0;
+}
+
+/* Warning Messages */
+.alert-warning {
+    background-color: #fff3e0; /* Light orange for warnings */
+    color: #ef6c00; /* Dark orange text */
+    border: 1px solid #ef6c00;
+}
+
+
+
+
+
+    
 .dashboard-container {
     display: grid;
     grid-template-columns: 250px 1fr;

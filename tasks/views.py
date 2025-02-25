@@ -3,18 +3,6 @@ from .models import Task
 from users.models import User
 from django.contrib import messages
 
-#task list for filters
-def task_list(request, filter_type=None):
-    if filter_type == "completed":
-        tasks = Task.objects.filter(status="completed")
-    elif filter_type == "delayed":
-        tasks = Task.objects.filter(status="delayed")
-    elif filter_type == "in_progress":
-        tasks = Task.objects.filter(status="in_progress")
-    else:
-        tasks = Task.objects.all()  # Default: Show all tasks
-
-    return render(request, "tasks/dashboard.html", {"tasks": tasks})
 
 # Show all tasks and employees to the manager
 def manager_tasks(request):
