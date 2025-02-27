@@ -21,14 +21,12 @@
                 <input type="text" placeholder="Search tasks..." class="search-input">
                 <i class="fas fa-search search-icon"></i>
             </div>
+            
             <div class="user-section">
-                <button class="language-switcher" onclick="toggleLanguage()">
-                    <i class="fas fa-globe"></i>
-                    <span id="languageText">EN</span>
-                </button>
                 <img src="{% static 'imgs/images_user/picture admain.webp' %}" alt="User Image" class="user-image">
-                <span class="user-name">John Doe</span>
+                <span class="user-name">{{user.first_name}} {{user.last_name}}</span>
             </div>
+            
         </div>
     
         <!-- Sidebar and Main Content -->
@@ -46,30 +44,27 @@
                 <a href="{% url 'tasks:log_out' %}" class="logout-btn" style="text-decoration: none;">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
-                
              </div>
     
             <!-- Main Content -->
             <div class="main-content">
                 <h1>📌 <span class="lang-my-tasks">My Tasks</span></h1>
                 <!-- Task List -->
-            <div id="taskList" class="task-list">
-                {% if tasks %}
-                    {% for task in tasks %}
-                        <div class="task-card task{{task.status}}" data-status="{{ task.status }}">
-                            <h3>{{ task.title }}</h3>
-                            <p>{{ task.description }}</p>
-                            <p><strong>Assigned to:</strong> {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
-                            <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
-                            <p><strong>Status:</strong> {{ task.get_status_display }}</p>
-
-                            
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    📋 No tasks available
-                {% endif %}
-            </div>
+                <div id="taskList" class="task-list">
+                    {% if tasks %}
+                        {% for task in tasks %}
+                            <div class="task-card task{{task.status}}" data-status="{{ task.status }}">
+                                <h3>{{ task.title }}</h3>
+                                <p>{{ task.description }}</p>
+                                <p><strong>Assigned to:</strong> {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
+                                <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+                                <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        📋 No tasks available
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -78,25 +73,16 @@
 
     <script>
         function filterTasks(status) {
-    // Get all task elements
-    const tasks = document.querySelectorAll('.task-card');
-
-    tasks.forEach(task => {
-        const taskStatus = task.getAttribute('data-status');
-
-        // Show or hide tasks based on the selected status
-        if (status === 'all' || taskStatus === status) {
-            task.style.display = 'block'; // Show the task
-        } else {
-            task.style.display = 'none'; // Hide the task
+            const tasks = document.querySelectorAll('.task-card');
+            tasks.forEach(task => {
+                const taskStatus = task.getAttribute('data-status');
+                if (status === 'all' || taskStatus === status) {
+                    task.style.display = 'block';
+                } else {
+                    task.style.display = 'none';
+                }
+            });
         }
-    });
-        }
-
-        
     </script>
-    
-
-
 </body>
 </html>

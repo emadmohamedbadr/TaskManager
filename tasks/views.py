@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
 from users.models import User
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 #task list for filters
 def task_list(request, filter_type=None):
@@ -27,6 +28,7 @@ def manager_tasks(request):
     return render(request, 'tasks/manager_tasks.html', {'tasks': tasks, 'employees': employees})
 
 # View tasks of the logged-in employee
+
 def employee_tasks(request):
     if request.session.get('user_role') != 'employee':
         return redirect('users:login')  
@@ -35,9 +37,11 @@ def employee_tasks(request):
     if not user_id:
         return redirect('users:login')
 
-    tasks = Task.objects.filter(assigned_to_id=user_id)  
+    user = get_object_or_404(User, id=user_id)
+    tasks = Task.objects.filter(assigned_to_id=user_id) 
+    
 
-    return render(request, 'tasks/employee_tasks.html', {'tasks': tasks})
+    return render(request, 'tasks/employee_tasks.html', {'tasks': tasks , 'user' : user})
 
 # Add a new task (Manager only)
 def add_task(request):
