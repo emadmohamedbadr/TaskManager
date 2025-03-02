@@ -139,21 +139,44 @@ def log_out(request):
     return redirect("users:login")  
 
 # this function used in get employees in manger page and thier tasks
-def manager_page(request):
-    employees = User.objects.filter(role='employee')  #
+def manager_tasks(request):
+    # Check if the user is a manager; if not, redirect to the login page
+    if request.session.get('user_role') != 'manager':
+        return redirect('users:login')  
+
+    # Fetch all tasks from the database
+    tasks = Task.objects.all()
+
+    # Fetch all employees (users with the role 'employee')
+    employees = User.objects.filter(role='employee')
+
+    # Create a list to store employee data
     employee_data = []
 
-    for emp in employees:
-        total_tasks = Task.objects.filter(assigned_to=emp).count()
-        delayed_tasks = Task.objects.filter(assigned_to=emp, status='delayed').count()
-        completed_tasks = Task.objects.filter(assigned_to=emp, status='completed').count()
+    # Loop through each employee to calculate task statistics
+    for employee in employees:
+        # Count total tasks assigned to the employee
+        total_tasks = Task.objects.filter(assigned_to=employee).count()
+        
+        # Count delayed tasks assigned to the employee
+        delayed_tasks = Task.objects.filter(assigned_to=employee, status='delayed').count()
+        
+        # Count completed tasks assigned to the employee
+        completed_tasks = Task.objects.filter(assigned_to=employee, status='completed').count()
 
+        # Add the employee's data to the list
         employee_data.append({
-            'first_name': emp.first_name,
-            'last_name': emp.last_name,
+            'id': employee.id,
+            'first_name': employee.first_name,
+            'last_name': employee.last_name,
             'total_tasks': total_tasks,
             'delayed_tasks': delayed_tasks,
-            'completed_tasks': completed_tasks
+            'completed_tasks': completed_tasks,
         })
 
-    return render(request, 'tasks/manager_page.html', {'employee_data': employee_data})
+    # Pass the data to the template
+    return render(request, 'tasks/manager_tasks.html', {
+        'tasks': tasks,
+        'employees': employees,
+        'employee_data': employee_data,  # Pass employee data to the template
+})
