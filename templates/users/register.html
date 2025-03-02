@@ -9,16 +9,14 @@
     <link rel="stylesheet" href="{% static 'css/registerstyle.css' %}">
 </head>
 <body>
-    <!-- for system messages -->
-    {% if messages %}
     <div class="messages">
         {% for message in messages %}
             <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% endif %}">
-                {{ message }}
+                <span>{{ message }}</span>
+                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
             </div>
         {% endfor %}
     </div>
-    {% endif %}
 
     <div class="outer-border"> <!-- الإطار الخارجي -->
         <div class="container">
@@ -30,8 +28,8 @@
                     <form method="POST">
                         {% csrf_token %}
                         
-                        <label for="first_name">First Name:</label>
-                        <input type="text" id="first_name" name="first_name" required>
+                        <label for="first-name">First Name:</label>
+                        <input type="text" id="name" name="first_name" required>
             
                         <label for="last_name">Last Name:</label>
                         <input type="text" id="last_name" name="last_name" required>
@@ -68,6 +66,23 @@
             </div>
         </div>
     </div>
+    <script>
+        // Function to hide messages after 5 seconds
+        function hideMessages() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 1000); // Fade out duration
+                }, 5000); // 5 seconds delay
+            });
+        }
+    
+        // Run the function when the page loads
+        window.onload = hideMessages;
+    </script>
 </body>
 </html>
 

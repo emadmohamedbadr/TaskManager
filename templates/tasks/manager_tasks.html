@@ -9,25 +9,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-     <!-- this if for display error message like deleted success or faild and so on -->
+    <!-- System Messages -->
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
             <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
                 {{ message }}
+                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
             </div>
         {% endfor %}
     </div>
     {% endif %}
-
-    
 
     <div class="dashboard-container">
         <!-- Header -->
         <header class="header">
             <div class="header-left">
                 <img src="{% static 'imgs/image_admin/logo.webp' %}" alt="Logo" class="logo">
-                <h1 class="project-name">Task Manager</h1>
+                <h1 class="project-name">
+                    <a href="{% url 'tasks:manager_tasks' %}" style="text-decoration: none; color: inherit;">
+                         Task Management
+                    </a>
+                </h1>
                 <!-- Search Bar -->
                 <div class="search-bar">
                     <input type="text" placeholder="Search..." id="taskSearch">
@@ -37,7 +40,7 @@
             <div class="header-right">
                 <div class="profile">
                     <img src="{% static 'imgs/image_admin/picture_admin.webp' %}" alt="Profile" class="profile-pic">
-                    <span class="profile-name">Admin</span>
+                    <span class="profile-name">{{ request.session.user_name }}</span>
                 </div>
             </div>
         </header>
@@ -55,8 +58,6 @@
             <a href="{% url 'tasks:log_out' %}" class="logout-btn" style="text-decoration: none;">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
-            
-            
         </div>
 
         <!-- Main Content -->
@@ -64,129 +65,177 @@
             <h1>📌 Task Management</h1>
 
             <!-- Task Form (Initially Hidden) -->
-            <div id="taskForm" class="task-form" style="display: none;">
-                <h3>➕ Add New Task</h3>
-                <form method="POST" action="{% url 'tasks:add_task' %}">
-                    {% csrf_token %}
-                    <label>👤 Employee:</label>
-                    <select name="assigned_to">
-                        {% for employee in employees %}
-                            <option value="{{ employee.id }}">{{ employee.first_name }} {{ employee.last_name }}</option>
-                        {% endfor %}
-                    </select>
+<div id="taskForm" class="task-form" style="display: none;">
+    <h3>➕ Add New Task</h3>
+    <form method="POST" action="{% url 'tasks:add_task' %}">
+        {% csrf_token %}
+        <label>👤 Employee:</label>
+        <select name="assigned_to">
+            {% for employee in employees %}
+                <option value="{{ employee.id }}">{{ employee.first_name }} {{ employee.last_name }}</option>
+            {% endfor %}
+        </select>
 
-                    <label>✍️ Task Name:</label>
-                    <input type="text" name="title" placeholder="Enter task name" required>
+        <label>✍️ Task Name:</label>
+        <input type="text" name="title" placeholder="Enter task name" required>
 
-                    <label>📝 Task Description:</label>
-                    <textarea name="description" placeholder="Enter task description"></textarea>
+        <label>📝 Task Description:</label>
+        <textarea name="description" placeholder="Enter task description"></textarea>
 
-                    <label>🔥 Priority:</label>
-                    <select name="priority">
-                        <option value="low">🟢 Low</option>
-                        <option value="medium">🟠 Medium</option>
-                        <option value="high">🔴 High</option>
-                        <option value="urgent">🚨 Urgent</option>
-                    </select>
+        <label>🔥 Priority:</label>
+        <select name="priority">
+            <option value="low">🟢 Low</option>
+            <option value="medium">🟠 Medium</option>
+            <option value="high">🔴 High</option>
+            <option value="urgent">🚨 Urgent</option>
+        </select>
 
-                    <label>📌 Status:</label>
-                    <select name="status">
-                        <option value="pending">⏳ Pending</option>
-                        <option value="in_progress">⚙️ In Progress</option>
-                        <option value="completed">✅ Completed</option>
-                        <option value="delayed">❌ Delayed</option>
-                    </select>
+        <label>📌 Status:</label>
+        <select name="status">
+            <option value="pending">⏳ Pending</option>
+            <option value="in_progress">⚙️ In Progress</option>
+            <option value="completed">✅ Completed</option>
+            <option value="delayed">❌ Delayed</option>
+        </select>
 
-                    <div class="form-buttons">
-                        <button type="submit"><i class="fas fa-check"></i> Add</button>
-                        <button type="button" onclick="hideTaskForm()"><i class="fas fa-times"></i> Cancel</button>
+        <!-- Add Due Date Field -->
+        <label>⏰ Due Date:</label>
+        <input type="datetime-local" name="due_date" required>
+
+        <div class="form-buttons">
+            <button type="submit"><i class="fas fa-check"></i> Add</button>
+            <button type="button" onclick="hideTaskForm()"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </form>
+</div>
+
+            <!-- Tasks Banner -->
+<div class="tasks-banner">
+    <h2>📋 Tasks Overview</h2>
+    <div id="taskList" class="task-list">
+        {% if tasks %}
+            {% for task in tasks %}
+                <div class="task-card {{ task.status }} {{ task.priority }}" data-status="{{ task.status }}">
+                    <h3>{{ task.title }}</h3>
+                    <p>{{ task.description }}</p>
+                    <p><strong>Assigned to:</strong> {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
+                    <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+                    <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+    
+                    <!-- Update Task Button -->
+                    <button class="update-task-btn" onclick="showUpdateTaskForm('{{ task.id }}', '{{ task.title }}', '{{ task.description }}', '{{ task.priority }}', '{{ task.status }}')">
+                        <i class="fas fa-edit"></i> Update
+                    </button>
+    
+                    <!-- Delete Task Button -->
+                    <form method="POST" action="{% url 'tasks:delete_task' task.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-task-btn" onclick="return confirmDeleteTask()">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            📋 No tasks available
+        {% endif %}
+    </div>
+</div>
+
+           <!-- Employees Section -->
+           <div class="employees-section">
+            <h2>👥 Employees Overview</h2>
+            <div class="employees-list">
+                {% for data in employee_data %}
+                    <div class="employee-card">
+                        <h3>{{ data.first_name }} {{ data.last_name }}</h3>
+                        <p><strong>Total Tasks:</strong> {{ data.total_tasks }}</p>
+                        <p><strong>Delayed Tasks:</strong> {{ data.delayed_tasks }}</p>
+                        <p><strong>Completed Tasks:</strong> {{ data.completed_tasks }}</p>
                     </div>
-                </form>
-            </div>
-
-            <!-- Task List -->
-            <div id="taskList" class="task-list">
-                {% if tasks %}
-                    {% for task in tasks %}
-                        <div class="task-card" data-status="{{ task.status }}">
-                            <h3>{{ task.title }}</h3>
-                            <p>{{ task.description }}</p>
-                            <p><strong>Assigned to:</strong> {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
-                            <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
-                            <p><strong>Status:</strong> {{ task.get_status_display }}</p>
-
-                            <!-- Update Task Button -->
-                            <button class="update-task-btn" onclick="showUpdateTaskForm('{{ task.id }}', '{{ task.title }}', '{{ task.description }}', '{{ task.priority }}', '{{ task.status }}')">
-                                <i class="fas fa-edit"></i> Update
-                            </button>
-
-                            <!-- Delete Task Button -->
-                            <form method="POST" action="{% url 'tasks:delete_task' task.id %}" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-task-btn" onclick="return confirmDeleteTask()">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                            </form>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    📋 No tasks available
-                {% endif %}
+                {% empty %}
+                    <p>No employees found.</p>
+                {% endfor %}
             </div>
         </div>
-    </div>
+            
+     
 
     <!-- Update Task Form -->
-    <div id="updateTaskForm" class="task-form" style="display: none;">
-        <h3>✏️ Update Task</h3>
-        <form method="POST" id="updateTaskFormElement" action="">
-            {% csrf_token %}
-            <input type="hidden" name="task_id" id="updateTaskId">
+<div id="updateTaskForm" class="task-form" style="display: none;">
+    <h3>✏️ Update Task</h3>
+    <form method="POST" id="updateTaskFormElement" action="">
+        {% csrf_token %}
+        <input type="hidden" name="task_id" id="updateTaskId">
 
-            <label>✍️ Task Name:</label>
-            <input type="text" name="title" id="updateTaskTitle" required>
+        <label>✍️ Task Name:</label>
+        <input type="text" name="title" id="updateTaskTitle" required>
 
-            <label>📝 Task Description:</label>
-            <textarea name="description" id="updateTaskDescription"></textarea>
+        <label>📝 Task Description:</label>
+        <textarea name="description" id="updateTaskDescription"></textarea>
 
-            <label>🔥 Priority:</label>
-            <select name="priority" id="updateTaskPriority">
-                <option value="low">🟢 Low</option>
-                <option value="medium">🟠 Medium</option>
-                <option value="high">🔴 High</option>
-                <option value="urgent">🚨 Urgent</option>
-            </select>
+        <label>🔥 Priority:</label>
+        <select name="priority" id="updateTaskPriority">
+            <option value="low">🟢 Low</option>
+            <option value="medium">🟠 Medium</option>
+            <option value="high">🔴 High</option>
+            <option value="urgent">🚨 Urgent</option>
+        </select>
 
-            <label>📌 Status:</label>
-            <select name="status" id="updateTaskStatus">
-                <option value="pending">⏳ Pending</option>
-                <option value="in_progress">⚙️ In Progress</option>
-                <option value="completed">✅ Completed</option>
-                <option value="delayed">❌ Delayed</option>
-            </select>
+        <label>📌 Status:</label>
+        <select name="status" id="updateTaskStatus">
+            <option value="pending">⏳ Pending</option>
+            <option value="in_progress">⚙️ In Progress</option>
+            <option value="completed">✅ Completed</option>
+            <option value="delayed">❌ Delayed</option>
+        </select>
 
-            <div class="form-buttons">
-                <button type="submit"><i class="fas fa-save"></i> Save</button>
-                <button type="button" onclick="hideUpdateTaskForm()"><i class="fas fa-times"></i> Cancel</button>
-            </div>
-        </form>
-    </div>
+        <!-- Add Due Date Field -->
+        <label>⏰ Due Date:</label>
+        <input type="datetime-local" name="due_date" id="updateTaskDueDate" required>
+
+        <div class="form-buttons">
+            <button type="submit"><i class="fas fa-save"></i> Save</button>
+            <button type="button" onclick="hideUpdateTaskForm()"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </form>
+</div>
 
     <script>
+        // Function to hide messages after 5 seconds
+        function hideMessages() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 1000); // Fade out duration
+                }, 5000); // 5 seconds delay
+            });
+        }
+
+        // Run the function when the page loads
+        window.onload = hideMessages;
+
         function showTaskForm() { document.getElementById("taskForm").style.display = "block"; }
         function hideTaskForm() { document.getElementById("taskForm").style.display = "none"; }
 
-        function showUpdateTaskForm(taskId, title, description, priority, status) {
-            document.getElementById("updateTaskForm").style.display = "block";
-            document.getElementById("updateTaskId").value = taskId;
-            document.getElementById("updateTaskTitle").value = title;
-            document.getElementById("updateTaskDescription").value = description;
-            document.getElementById("updateTaskPriority").value = priority;
-            document.getElementById("updateTaskStatus").value = status;
+function showUpdateTaskForm(taskId, title, description, priority, status, dueDate) {
+    document.getElementById("updateTaskForm").style.display = "block";
+    document.getElementById("updateTaskId").value = taskId;
+    document.getElementById("updateTaskTitle").value = title;
+    document.getElementById("updateTaskDescription").value = description;
+    document.getElementById("updateTaskPriority").value = priority;
+    document.getElementById("updateTaskStatus").value = status;
 
-            // Dynamically set the form action URL
-            document.getElementById("updateTaskFormElement").action = `{% url 'tasks:update_task' 0 %}`.replace("0", taskId);
-        }
+    // Set Due Date value
+    const dueDateInput = document.getElementById("updateTaskDueDate");
+    dueDateInput.value = dueDate; // Ensure dueDate is in the correct format (YYYY-MM-DDTHH:MM)
+
+    // Dynamically set the form action URL
+    document.getElementById("updateTaskFormElement").action = `{% url 'tasks:update_task' 0 %}`.replace("0", taskId);
+}
 
         function hideUpdateTaskForm() {
             document.getElementById("updateTaskForm").style.display = "none";
@@ -202,6 +251,5 @@
             return confirm("Are you sure you want to delete this task?");
         }
     </script>
-
 </body>
 </html>

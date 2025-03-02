@@ -9,16 +9,17 @@
 </head>
 <body>
 
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% endif %}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
+<!-- System Messages -->
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% endif %}">
+            {{ message }}
+            <button type="button" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
     
     <div class="container">
         <div class="login-container">
@@ -60,6 +61,23 @@
             <img src="{% static 'imgs/image_login/9784103.jpg' %}" alt="Login Illustration">
         </div>
     </div>
+    <script>
+        // Function to hide messages after 10 seconds
+        function hideMessages() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 1000); // Fade out duration
+                }, 5000); // 10 seconds delay
+            });
+        }
+    
+        // Run the function when the page loads
+        window.onload = hideMessages;
+    </script>
 </body>
 </html>
 

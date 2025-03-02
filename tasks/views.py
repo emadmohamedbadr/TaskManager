@@ -3,6 +3,7 @@ from .models import Task
 from users.models import User
 from django.contrib import messages
 
+
 #task list for filters
 def task_list(request, filter_type=None):
     if filter_type == "completed":
@@ -136,3 +137,23 @@ def delete_task(request, task_id):
 def log_out(request):
     request.session.flush()  
     return redirect("users:login")  
+
+# this function used in get employees in manger page and thier tasks
+def manager_page(request):
+    employees = User.objects.filter(role='employee')  #
+    employee_data = []
+
+    for emp in employees:
+        total_tasks = Task.objects.filter(assigned_to=emp).count()
+        delayed_tasks = Task.objects.filter(assigned_to=emp, status='delayed').count()
+        completed_tasks = Task.objects.filter(assigned_to=emp, status='completed').count()
+
+        employee_data.append({
+            'first_name': emp.first_name,
+            'last_name': emp.last_name,
+            'total_tasks': total_tasks,
+            'delayed_tasks': delayed_tasks,
+            'completed_tasks': completed_tasks
+        })
+
+    return render(request, 'tasks/manager_page.html', {'employee_data': employee_data})

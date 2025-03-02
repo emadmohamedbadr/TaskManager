@@ -9,25 +9,22 @@
     <link rel="stylesheet" href="{% static 'css/user.css' %}">
 </head>
 <body>
-
     <div class="dashboard-container">
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
                 <img src="{% static 'imgs/images_user/logo.webp' %}" alt="Task Manager Logo" class="logo">
-                <span class="app-name">Task Manager</span>
+                <a href="{% url 'tasks:employee_tasks' %}" style="text-decoration: none; color: inherit;">
+                    Task Management
+               </a>
             </div>
             <div class="search-section">
                 <input type="text" placeholder="Search tasks..." class="search-input">
                 <i class="fas fa-search search-icon"></i>
             </div>
             <div class="user-section">
-                <button class="language-switcher" onclick="toggleLanguage()">
-                    <i class="fas fa-globe"></i>
-                    <span id="languageText">EN</span>
-                </button>
                 <img src="{% static 'imgs/images_user/picture admain.webp' %}" alt="User Image" class="user-image">
-                <span class="user-name">John Doe</span>
+                <span class="user-name">{{ request.session.user_name }}</span>
             </div>
         </div>
     
@@ -35,68 +32,120 @@
         <div class="content-wrapper">
             <!-- Sidebar -->
             <div class="sidebar">
-                <h2>📊 <span class="lang-dashboard">User Dashboard</span></h2>
+                <h2>📊 User Dashboard</h2>
                 <ul>
-                    <li><a href="#" onclick="filterTasks('all')"><i class="fas fa-tasks"></i> <span class="lang-all">All Tasks</span></a></li>
-                    <li><a href="#" onclick="filterTasks('pending')"><i class="fas fa-calendar-alt"></i> <span class="lang-upcoming">Pending Tasks</span></a></li>
-                    <li><a href="#" onclick="filterTasks('in_progress')"><i class="fas fa-calendar-day"></i> <span class="lang-current">In Progress Tasks</span></a></li>
-                    <li><a href="#" onclick="filterTasks('completed')"><i class="fas fa-check-circle"></i> <span class="lang-completed">Completed Tasks</span></a></li>
-                    <li><a href="#" onclick="filterTasks('delayed')"><i class="fas fa-exclamation-triangle"></i> <span class="lang-delayed">Delayed Tasks</span></a></li>
+                    <li><a href="#" onclick="filterTasks('all')"><i class="fas fa-tasks"></i> All Tasks</a></li>
+                    <li><a href="#" onclick="filterTasks('pending')"><i class="fas fa-calendar-alt"></i> Pending Tasks</a></li>
+                    <li><a href="#" onclick="filterTasks('in_progress')"><i class="fas fa-calendar-day"></i> In Progress Tasks</a></li>
+                    <li><a href="#" onclick="filterTasks('completed')"><i class="fas fa-check-circle"></i> Completed Tasks</a></li>
+                    <li><a href="#" onclick="filterTasks('delayed')"><i class="fas fa-exclamation-triangle"></i> Delayed Tasks</a></li>
                 </ul>
                 <a href="{% url 'tasks:log_out' %}" class="logout-btn" style="text-decoration: none;">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
-                
-             </div>
+            </div>
     
             <!-- Main Content -->
             <div class="main-content">
-                <h1>📌 <span class="lang-my-tasks">My Tasks</span></h1>
-                <!-- Task List -->
-            <div id="taskList" class="task-list">
-                {% if tasks %}
-                    {% for task in tasks %}
-                        <div class="task-card task{{task.status}}" data-status="{{ task.status }}">
+                <h1>📌 My Tasks</h1>
+                <div class="task-list tasks-grid">
+                    {% if tasks %}
+                        {% for task in tasks %}
+                        <div class="task-item" data-status="{{ task.status }}">
                             <h3>{{ task.title }}</h3>
                             <p>{{ task.description }}</p>
                             <p><strong>Assigned to:</strong> {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</p>
                             <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
                             <p><strong>Status:</strong> {{ task.get_status_display }}</p>
-
-                            
+                            {% if task.status != 'completed' %}
+                            <form action="{% url 'tasks:update_task_status' task.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="completed">
+                                <button type="submit" class="complete-btn">✅ Complete</button>
+                            </form>
+                            {% endif %}
                         </div>
-                    {% endfor %}
-                {% else %}
-                    📋 No tasks available
-                {% endif %}
-            </div>
+                        {% endfor %}
+                    {% else %}
+                        📋 No tasks available
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-
     <script src="{% static 'js/user.js' %}"></script>
-
     <script>
         function filterTasks(status) {
-    // Get all task elements
-    const tasks = document.querySelectorAll('.task-card');
-
-    tasks.forEach(task => {
-        const taskStatus = task.getAttribute('data-status');
-
-        // Show or hide tasks based on the selected status
-        if (status === 'all' || taskStatus === status) {
-            task.style.display = 'block'; // Show the task
-        } else {
-            task.style.display = 'none'; // Hide the task
+            const tasks = document.querySelectorAll('.task-item');
+            tasks.forEach(task => {
+                const taskStatus = task.getAttribute('data-status');
+                if (status === 'all' || taskStatus === status) {
+                    task.style.display = 'block';
+                } else {
+                    task.style.display = 'none';
+                }
+            });
         }
-    });
-        }
-
-        
     </script>
-    
-
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function completeTask(taskId) {
+            $.ajax({
+                url: "{% url 'tasks:update_task_status' 0 %}".replace("0", taskId),
+                method: "POST",
+                data: {
+                    status: "completed",
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function(response) {
+                    location.reload(); // Refresh the page after completion
+                },
+                error: function(xhr, status, error) {
+                    alert("Failed to update task status.");
+                }
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function completeTask(taskId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to mark this task as completed?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#4CAF50',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, complete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{% url 'tasks:update_task_status' 0 %}".replace("0", taskId),
+                        method: "POST",
+                        data: {
+                            status: "completed",
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            Swal.fire(
+                                'Completed!',
+                                'The task has been marked as completed.',
+                                'success'
+                            ).then(() => {
+                                location.reload(); // Refresh the page after completion
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to update task status.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+    </script>
 </body>
 </html>

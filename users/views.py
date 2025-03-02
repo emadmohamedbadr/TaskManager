@@ -16,6 +16,8 @@ def login(request):
             if check_password(password, user.password):  
                 request.session['user_id'] = user.id  
                 request.session['user_role'] = user.role  
+                request.session['user_name'] = f"{user.first_name} {user.last_name}"  # ✅ Store full name in session
+
                 messages.success(request, "Login successful!")  # Success message
 
                 if user.role == 'manager':
