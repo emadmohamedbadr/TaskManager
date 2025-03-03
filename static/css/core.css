@@ -1,4 +1,4 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -8,6 +8,7 @@
 body {
     background-color: #fff;
     color: #222;
+    font-family: Arial, sans-serif;
 }
 ul {
     list-style: none;
@@ -24,7 +25,7 @@ header .header-cont {
     left: 50%;
     transform: translateX(-50%);
     padding: 14px 30px;
-    padding-right: 25px ;
+    padding-right: 25px;
     box-shadow: 0px 0px 4px black;
     border-radius: 28px;
     display: flex;
@@ -52,17 +53,19 @@ header .links ul {
 }
 
 header .logo ul a,
-header .links ul a{
+header .links ul a {
     font-size: 17px;
     font-weight: 500;
 }
 
+/* Button Styling */
 header .links .btn {
     background-color: rgb(0, 81, 255);
-    padding: 8px 12px;
+    padding: 8px 14px;
     color: white;
     border-radius: 15px;
     font-weight: 700;
+    transition: all 0.3s ease-in-out;
 }
 
 header .links .btn-outside {
@@ -71,15 +74,27 @@ header .links .btn-outside {
     padding: 6px 12px;
     border-radius: 15px;
     font-weight: 700;
+    transition: all 0.3s ease-in-out;
 }
 
+/* Hover Effects */
+header .links .btn:hover {
+    background-color: rgb(0, 60, 200);
+    transform: scale(1.1);
+}
+
+header .links .btn-outside:hover {
+    background-color: rgb(0, 81, 255);
+    color: white;
+    transform: scale(1.1);
+}
 
 /* Main */
 .main {
     position: relative;
-    background-image: url("{% static 'imgs/index.jpg' %}");
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
+    background-position: center;
     height: 100vh;
     width: 100%;
     z-index: -1;
@@ -102,12 +117,16 @@ header .links .btn-outside {
     flex-direction: column;
     height: 82%;
     color: white;
+    text-align: center;
 }
+
 .main .content h1 {
     font-size: 50px;
     color: white;
     z-index: 999;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 }
+
 .main .content h4 {
     font-size: 19px;
     color: #ddd;

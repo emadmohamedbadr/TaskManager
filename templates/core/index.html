@@ -1,19 +1,22 @@
-{% load static %} 
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Mangement</title>
+    <title>Task Management</title>
 
     <!-- CSS FILE -->
-    <link rel="stylesheet" type="text/css" href="{% static 'css/core.css' %}"></head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/core.css' %}">
+</head>
 <body>
-    
+
     <style>
         .main {
-            background-image: url("{% static 'imgs/index.jpg' %}");
+            background-image: url("/static/imgs/index.jpg");
+            background-size: cover;
+            background-position: center;
         }
     </style>
 
@@ -26,7 +29,6 @@
                     <ul>
                         <li><a href="">Home</a></li>
                         <li><a href="{% url 'core:about' %}">About</a></li>
-                        <li><a href="">Services</a></li>
                     </ul>
                 </div>
             </nav>
@@ -42,9 +44,10 @@
     <!-- Main -->
     <section class="main">
         <div class="content">
-            <h1>Manage Projects in One Place</h1>
-            <h4>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis.</h4>
+            <h1>Organize Your Tasks Efficiently</h1>
+            <h4>Boost productivity by managing Tasks in one place</h4>
         </div>
     </section>
+
 </body>
 </html>

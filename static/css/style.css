@@ -103,25 +103,28 @@ body {
     min-height: 60vh;
 }
 
-/* Header Styles */
+/* header */
 .header {
     grid-column: 1 / -1;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 10px;
+    padding: 5px 20px;
     background-color: #ffffff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid #e0e0e0;
     margin-bottom: 0;
-    height: 50px;
+    height: 60px;
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
 }
-
+/* Header Left */
 .header-left {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-grow: 1;
+    flex-shrink: 0; 
 }
 
 .logo {
@@ -137,43 +140,51 @@ body {
     white-space: nowrap;
 }
 
-.search-bar {
+/* Search Section */
+.search-section {
     display: flex;
     align-items: center;
-    margin-left: 10px;
-    flex-grow: 1;
-    max-width: 700px;
+    justify-content: center;
+    flex-grow: 1; 
+    max-width: 600px; 
+    margin: 0 20px; 
+    position: relative;
 }
 
-.search-bar input {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px 0 0 5px;
-    outline: none;
+.search-input {
     width: 100%;
+    padding: 8px 40px 8px 20px; 
+    border: 1px solid #ddd;
+    border-radius: 25px; 
     font-size: 0.9rem;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
-.search-bar button {
-    padding: 5px 8px;
-    border: none;
-    background-color: #3498db;
-    color: #fff;
-    border-radius: 0 5px 5px 0;
+.search-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    color: #888;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 0.9rem;
+    transition: color 0.3s ease;
 }
 
-.search-bar button:hover {
-    background-color: #2980b9;
+.search-icon:hover {
+    color: #3498db;
 }
 
+/* Header Right */
 .header-right {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0;
+    flex-shrink: 0; 
 }
 
 .profile {
@@ -194,7 +205,6 @@ body {
     color: #2c3e50;
     font-weight: 500;
 }
-
 /* Sidebar Styles */
 .sidebar {
     background-color: #2c3e50;
@@ -202,6 +212,10 @@ body {
     padding: 40px;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     margin-top: 0;
+    position: sticky; 
+    top: 60px; 
+    height: calc(100vh - 60px); 
+    overflow-y: auto; 
 }
 
 .sidebar h2 {
@@ -364,8 +378,8 @@ h1 {
 /* Task List Styles */
 .task-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* عرض أقل للمهام */
-    gap: 20px; /* زيادة المسافة بين المهام */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 20px; 
     padding: 10px;
 }
 
@@ -373,7 +387,7 @@ h1 {
     background: #ffffff;
     padding: 15px;
     border-radius: 10px;
-    border-left: 5px solid #3498db; /* لون افتراضي */
+    border-left: 5px solid #3498db; 
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -395,70 +409,65 @@ h1 {
     color: #555;
     font-size: 1rem;
 }
-
-/* تلوين المهام حسب الحالة */
 .task-card.completed {
-    border-left-color: #28a745; /* أخضر للمهام المكتملة */
-    background-color: #f0fff4; /* خلفية خضراء فاتحة */
+    border-left-color: #28a745; 
+    background-color: #f0fff4; 
 }
 
 .task-card.delayed {
-    border-left-color: #d1120b; /* برتقالي للمهام المتأخرة */
-    background-color: #fff8e1; /* خلفية برتقالية فاتحة */
+    border-left-color: #d1120b; 
+    background-color: #fff8e1; 
 }
 
 .task-card.pending {
-    border-left-color: #6c757d; /* رمادي للمهام المعلقة */
-    background-color: #f8f9fa; /* خلفية رمادية فاتحة */
+    border-left-color: #6c757d; 
+    background-color: #f8f9fa; 
 }
 
 .task-card.in_progress {
-    border-left-color: #17a2b8; /* أزرق للمهام قيد التنفيذ */
-    background-color: #e3f2fd; /* خلفية زرقاء فاتحة */
+    border-left-color: #17a2b8; 
+    background-color: #e3f2fd; 
 }
-
-/* تلوين المهام حسب الأولوية */
 .task-card.high {
-    border-left-color: #dc3545; /* أحمر للمهام ذات الأولوية العالية */
-    background-color: #ffe6e6; /* خلفية حمراء فاتحة */
+    border-left-color: #dc3545; 
+    background-color: #ffe6e6; 
 }
-/* تنسيق أزرار الحذف والتعديل */
 .update-task-btn, .delete-task-btn {
-    padding: 8px 12px; /* زيادة الحشو */
+    padding: 8px 12px; 
     border: none;
-    border-radius: 5px; /* تقويس الحواف */
+    border-radius: 5px; 
     cursor: pointer;
     font-size: 0.9rem;
     margin-right: 5px;
     transition: background-color 0.3s ease, transform 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 5px; /* تباعد بين الأيقونة والنص */
+    gap: 5px; 
 }
 
 .update-task-btn {
-    background-color: #3498db; /* لون أزرق */
+    background-color: #3498db; 
     color: #fff;
 }
 
 .update-task-btn:hover {
-    background-color: #2980b9; /* لون أزرق داكن عند التحويم */
-    transform: scale(1.05); /* تكبير الزر قليلاً */
+    background-color: #2980b9; 
+    transform: scale(1.05); 
 }
 
 .delete-task-btn {
-    background-color: #e74c3c; /* لون أحمر */
+    background-color: #e74c3c; 
     color: #fff;
 }
 
 .delete-task-btn:hover {
-    background-color: #c0392b; /* لون أحمر داكن عند التحويم */
-    transform: scale(1.05); /* تكبير الزر قليلاً */
+    background-color: #c0392b; 
+    transform: scale(1.05); 
 }
 
-/* أيقونات الأزرار */
+
 .update-task-btn i, .delete-task-btn i {
-    font-size: 1rem; /* حجم الأيقونة */
+    font-size: 1rem; 
 }
 /* Employees Section Styles */
 .employees-section {
