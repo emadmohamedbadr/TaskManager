@@ -10,6 +10,93 @@ body {
     color: #333;
 }
 
+.messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.alert {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.5s ease-out;
+    position: relative;
+}
+
+.alert button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 0;
+    opacity: 1;
+    z-index: 1;
+}
+
+.alert button:hover {
+    opacity: 0.8;
+}
+
+.alert-success {
+    background-color: #28a745;
+}
+
+.alert-error {
+    background-color: #dc3545;
+}
+
+.alert-info {
+    background-color: #17a2b8;
+}
+
+.alert-warning {
+    background-color: #ffc107;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.close-btn:hover {
+    opacity: 0.8;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        display: none;
+    }
+}
+
 .dashboard-container {
     display: grid;
     grid-template-columns: 250px 1fr;
@@ -22,56 +109,60 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 10px; /* تقليل الحشو */
+    padding: 5px 10px;
     background-color: #ffffff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 0; /* إزالة الـ margin-bottom */
-    height: 50px; /* تقليل ارتفاع الـ Header */
+    margin-bottom: 0;
+    height: 50px;
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 8px; /* تقليل المسافة بين العناصر */
+    gap: 8px;
+    flex-grow: 1;
 }
 
 .logo {
-    width: 30px; /* تصغير حجم الشعار */
+    width: 30px;
     height: 30px;
 }
 
 .project-name {
-    font-size: 1.2rem; /* تصغير حجم الخط */
+    font-size: 1.2rem;
     color: #2c3e50;
     font-weight: 600;
-    margin: 0; /* إزالة الهوامش */
+    margin: 0;
+    white-space: nowrap;
 }
 
 .search-bar {
     display: flex;
     align-items: center;
-    margin-left: 10px; /* تقليل المسافة بين العنوان والبحث */
+    margin-left: 10px;
+    flex-grow: 1;
+    max-width: 700px;
 }
 
 .search-bar input {
-    padding: 5px; /* تقليل الحشو */
+    padding: 5px;
     border: 1px solid #ddd;
     border-radius: 5px 0 0 5px;
     outline: none;
-    width: 150px; /* تقليل عرض مربع البحث */
-    font-size: 0.9rem; /* تصغير حجم الخط */
+    width: 100%;
+    font-size: 0.9rem;
 }
 
 .search-bar button {
-    padding: 5px 8px; /* تقليل الحشو */
+    padding: 5px 8px;
     border: none;
     background-color: #3498db;
     color: #fff;
     border-radius: 0 5px 5px 0;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 0.9rem; /* تصغير حجم الخط */
+    font-size: 0.9rem;
 }
 
 .search-bar button:hover {
@@ -81,34 +172,25 @@ body {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 10px; /* تقليل المسافة بين العناصر */
-}
-
-.language-switcher select {
-    padding: 5px; /* تقليل الحشو */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    cursor: pointer;
-    outline: none;
-    font-size: 0.9rem; /* تصغير حجم الخط */
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .profile {
     display: flex;
     align-items: center;
-    gap: 5px; /* تقليل المسافة بين الصورة والنص */
+    gap: 5px;
 }
 
 .profile-pic {
-    width: 30px; /* تصغير حجم الصورة */
+    width: 30px;
     height: 30px;
     border-radius: 50%;
     border: 2px solid #3498db;
 }
 
 .profile-name {
-    font-size: 0.9rem; /* تصغير حجم الخط */
+    font-size: 0.9rem;
     color: #2c3e50;
     font-weight: 500;
 }
@@ -119,7 +201,7 @@ body {
     color: #fff;
     padding: 40px;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 0; /* إزالة الـ margin-top */
+    margin-top: 0;
 }
 
 .sidebar h2 {
@@ -279,40 +361,149 @@ h1 {
     background-color: #c0392b;
 }
 
-/* ضبط عرض التاسكات جنب بعض */
+/* Task List Styles */
 .task-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 3 أعمدة تلقائيًا */
-    gap: 15px; /* تباعد بين التاسكات */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* عرض أقل للمهام */
+    gap: 20px; /* زيادة المسافة بين المهام */
     padding: 10px;
 }
 
-.task {
+.task-card {
     background: #ffffff;
     padding: 15px;
-    border-radius: 5px;
-    border-left: 5px solid #3498db;
+    border-radius: 10px;
+    border-left: 5px solid #3498db; /* لون افتراضي */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-
-.task:hover {
+.task-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.task h3 {
+.task-card h3 {
     margin-bottom: 10px;
     color: #2c3e50;
     font-size: 1.2rem;
     font-weight: 600;
 }
 
-.task p {
+.task-card p {
     margin: 5px 0;
     color: #555;
     font-size: 1rem;
+}
+
+/* تلوين المهام حسب الحالة */
+.task-card.completed {
+    border-left-color: #28a745; /* أخضر للمهام المكتملة */
+    background-color: #f0fff4; /* خلفية خضراء فاتحة */
+}
+
+.task-card.delayed {
+    border-left-color: #d1120b; /* برتقالي للمهام المتأخرة */
+    background-color: #fff8e1; /* خلفية برتقالية فاتحة */
+}
+
+.task-card.pending {
+    border-left-color: #6c757d; /* رمادي للمهام المعلقة */
+    background-color: #f8f9fa; /* خلفية رمادية فاتحة */
+}
+
+.task-card.in_progress {
+    border-left-color: #17a2b8; /* أزرق للمهام قيد التنفيذ */
+    background-color: #e3f2fd; /* خلفية زرقاء فاتحة */
+}
+
+/* تلوين المهام حسب الأولوية */
+.task-card.high {
+    border-left-color: #dc3545; /* أحمر للمهام ذات الأولوية العالية */
+    background-color: #ffe6e6; /* خلفية حمراء فاتحة */
+}
+/* تنسيق أزرار الحذف والتعديل */
+.update-task-btn, .delete-task-btn {
+    padding: 8px 12px; /* زيادة الحشو */
+    border: none;
+    border-radius: 5px; /* تقويس الحواف */
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-right: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* تباعد بين الأيقونة والنص */
+}
+
+.update-task-btn {
+    background-color: #3498db; /* لون أزرق */
+    color: #fff;
+}
+
+.update-task-btn:hover {
+    background-color: #2980b9; /* لون أزرق داكن عند التحويم */
+    transform: scale(1.05); /* تكبير الزر قليلاً */
+}
+
+.delete-task-btn {
+    background-color: #e74c3c; /* لون أحمر */
+    color: #fff;
+}
+
+.delete-task-btn:hover {
+    background-color: #c0392b; /* لون أحمر داكن عند التحويم */
+    transform: scale(1.05); /* تكبير الزر قليلاً */
+}
+
+/* أيقونات الأزرار */
+.update-task-btn i, .delete-task-btn i {
+    font-size: 1rem; /* حجم الأيقونة */
+}
+/* Employees Section Styles */
+.employees-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.employees-section h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.employees-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.employee-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.employee-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.employee-card h3 {
+    font-size: 1.2rem;
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.employee-card p {
+    font-size: 1rem;
+    color: #555;
+    margin: 5px 0;
 }
 
 /* Priority Colors */
