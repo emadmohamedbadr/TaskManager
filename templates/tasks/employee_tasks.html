@@ -7,8 +7,21 @@
     <title>User Dashboard - Task Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/user.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'imgs/fav.png' %}">
+
 </head>
 <body>
+     <!-- System Messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class="dashboard-container">
         <!-- Header -->
         <div class="header">
@@ -58,7 +71,7 @@
                             <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
                             <p><strong>Status:</strong> {{ task.get_status_display }}</p>
                             {% if task.status != 'completed' %}
-                            <form action="{% url 'tasks:update_task_status' task.id %}" method="post">
+                            <form action="{% url 'tasks:update_task_status' task.id %}" method="post" onsubmit="completeTask(event, '{{ task.id }}')">
                                 {% csrf_token %}
                                 <input type="hidden" name="status" value="completed">
                                 <button type="submit" class="complete-btn">✅ Complete</button>
@@ -107,46 +120,65 @@
             });
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function completeTask(taskId) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you want to mark this task as completed?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#4CAF50',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, complete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{% url 'tasks:update_task_status' 0 %}".replace("0", taskId),
-                        method: "POST",
-                        data: {
-                            status: "completed",
-                            csrfmiddlewaretoken: "{{ csrf_token }}"
-                        },
-                        success: function(response) {
-                            Swal.fire(
-                                'Completed!',
-                                'The task has been marked as completed.',
-                                'success'
-                            ).then(() => {
-                                location.reload(); // Refresh the page after completion
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire(
-                                'Error!',
-                                'Failed to update task status.',
-                                'error'
-                            );
-                        }
-                    });
-                }
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script>
+       function completeTask(event, taskId) {
+           event.preventDefault(); // Prevent the form from submitting immediately
+   
+           Swal.fire({
+               title: 'Are you sure?',
+               text: "Do you want to mark this task as completed?",
+               icon: 'question',
+               showCancelButton: true,
+               confirmButtonColor: '#4CAF50',
+               cancelButtonColor: '#d33',
+               confirmButtonText: 'Yes, complete it!'
+           }).then((result) => {
+               if (result.isConfirmed) {
+                   $.ajax({
+                       url: "{% url 'tasks:update_task_status' 0 %}".replace("0", taskId),
+                       method: "POST",
+                       data: {
+                           status: "completed",
+                           csrfmiddlewaretoken: "{{ csrf_token }}"
+                       },
+                       success: function(response) {
+                           Swal.fire(
+                               'Completed!',
+                               'The task has been marked as completed.',
+                               'success'
+                           ).then(() => {
+                               location.reload(); // Refresh the page after completion
+                           });
+                       },
+                       error: function(xhr, status, error) {
+                           Swal.fire(
+                               'Error!',
+                               'Failed to update task status.',
+                               'error'
+                           );
+                       }
+                   });
+               }
+           });
+       }
+   
+    
+        // Function to hide messages after 5 seconds
+        function hideMessages() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 1000); // Fade out duration
+                }, 5000); // 5 seconds delay
             });
         }
+        // Run the function when the page loads
+        window.onload = hideMessages;
     </script>
 </body>
 </html>

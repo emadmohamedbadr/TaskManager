@@ -17,15 +17,7 @@ def task_list(request, filter_type=None):
 
     return render(request, "tasks/dashboard.html", {"tasks": tasks})
 
-# Show all tasks and employees to the manager
-def manager_tasks(request):
-    if request.session.get('user_role') != 'manager':
-        return redirect('users:login')  
 
-    tasks = Task.objects.all()
-    employees = User.objects.filter(role='employee')  
-
-    return render(request, 'tasks/manager_tasks.html', {'tasks': tasks, 'employees': employees})
 
 # View tasks of the logged-in employee
 def employee_tasks(request):
