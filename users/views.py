@@ -12,11 +12,11 @@ def login(request):
         try:
             user = User.objects.get(email=email)
 
-            #  Use Django's check_password for secure password checking
+            # Use Django's check_password for secure password checking
             if check_password(password, user.password):  
                 request.session['user_id'] = user.id  
                 request.session['user_role'] = user.role  
-                request.session['user_name'] = f"{user.first_name} {user.last_name}"  # ✅ Store full name in session
+                request.session['user_name'] = f"{user.first_name} {user.last_name}"  # Store full name in session
 
                 messages.success(request, "Login successful!")  # Success message
 
@@ -26,11 +26,10 @@ def login(request):
                     return redirect('tasks:employee_tasks')
             else:
                 messages.error(request, 'Invalid password')  
-                return redirect('users:login')  
-
         except User.DoesNotExist:
             messages.error(request, 'User not found')  
-            return redirect('users:login')  
+
+        return render(request, 'users/login.html')  # Reload the login page with error messages
 
     return render(request, 'users/login.html')
 
@@ -49,14 +48,14 @@ def register(request):
         # Check if passwords match
         if password != confirm_password:
             messages.error(request, 'Passwords do not match')
-            return redirect('users:register')  
+            return render(request, 'users/register.html')  # Reload the register page with error message
 
-        #Check if email is already registered
+        # Check if email is already registered
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists')
-            return redirect('users:register')  
+            return render(request, 'users/register.html')  # Reload the register page with error message
 
-        #  Hash the password before saving
+        # Hash the password before saving
         hashed_password = make_password(password)
 
         user = User(
@@ -66,19 +65,14 @@ def register(request):
             phone_number=phone_number,
             birthday=birthday,
             role=role,
-            password=hashed_password  #  Store hashed password
+            password=hashed_password  # Store hashed password
         )
         user.save()
 
         messages.success(request, 'Registration successful! You can now login.')
-        return redirect('users:login')  
+        return redirect('users:login')  # Redirect to login page after successful registration
 
     return render(request, 'users/register.html')
 
 
-def manager_page(request):
-    return render(request, 'users/manager_page.html')
 
-
-def employee_page(request):
-    return render(request, 'users/employee_page.html')

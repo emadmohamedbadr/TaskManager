@@ -15,7 +15,12 @@ def task_list(request, filter_type=None):
     else:
         tasks = Task.objects.all()  # Default: Show all tasks
 
-    return render(request, "tasks/dashboard.html", {"tasks": tasks})
+    if request.session.get('user_role') == 'manager':
+        template_name = 'tasks/manager_tasks.html'
+    else:
+        template_name = 'tasks/employee_tasks.html'
+
+    return render(request, template_name, {"tasks": tasks})
 
 
 
